@@ -1,0 +1,78 @@
+design_schema_task:
+  description: >
+    Design a PostgreSQL database schema for this user requirement:
+
+    {requirement}
+
+    Return ONLY a JSON object with this exact shape:
+    {{
+      "feature_name": "snake_case_name",
+      "tables": [
+        {{
+          "name": "table_name",
+          "columns": [
+            {{
+              "name": "id",
+              "type": "UUID",
+              "nullable": false,
+              "primary_key": true,
+              "unique": false,
+              "default": "gen_random_uuid()"
+            }}
+          ],
+          "foreign_keys": [
+            {{
+              "column": "hotel_id",
+              "references_table": "hotels",
+              "references_column": "id",
+              "on_delete": "RESTRICT"
+            }}
+          ],
+          "constraints": [],
+          "indexes": [
+            {{
+              "name": "idx_table_col",
+              "columns": ["col"],
+              "unique": false
+            }}
+          ]
+        }}
+      ],
+      "notes": []
+    }}
+
+    Rules:
+    - Use PostgreSQL types: UUID, TEXT, INTEGER, BIGINT, BOOLEAN, TIMESTAMPTZ, NUMERIC, JSONB, VARCHAR(n)
+    - Every table needs a primary key (prefer UUID id with gen_random_uuid())
+    - Include created_at TIMESTAMPTZ where appropriate
+    - Define relationships with foreign_keys
+    - Do NOT execute SQL
+    - Return raw JSON only (no markdown, no commentary)
+  expected_output: >
+    A single valid JSON document for DatabaseSchema (feature_name + tables).
+  agent: schema_designer
+
+validate_and_handoff_task:
+  description: >
+    Review the schema JSON produced for requirement:
+
+    {requirement}
+
+    Validate that:
+    - JSON is parseable and has feature_name and tables
+    - Each table has columns and a primary key
+    - Foreign keys reference existing table names in the schema
+    - No destructive operations are implied
+
+    If invalid, fix obvious structural issues and output corrected JSON.
+    If valid, output the same schema JSON unchanged.
+
+    CRITICAL: Your entire response must be ONLY the validated JSON object.
+    No markdown fences, no handoff prose, no commentary before or after.
+
+    Do NOT execute SQL. Database provisioning is handled by the system after you.
+  expected_output: >
+    Validated DatabaseSchema JSON only (raw JSON object, nothing else).
+  agent: orchestrator
+  context:
+    - design_schema_task

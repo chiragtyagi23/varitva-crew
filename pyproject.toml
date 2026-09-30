@@ -1,0 +1,27 @@
+[project]
+name = "form_db_flow"
+version = "0.1.0"
+description = "form_db_flow using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[tools]>=1.15.18,<2.0.0",
+    "psycopg[binary]>=3.2.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+]
+
+[project.scripts]
+kickoff = "form_db_flow.main:kickoff"
+run_crew = "form_db_flow.main:kickoff"
+plot = "form_db_flow.main:plot"
+run_with_trigger = "form_db_flow.main:run_with_trigger"
+serve = "form_db_flow.api.server:serve"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "flow"
+project_id = "9c0cdc3f-9d33-4344-8575-14acd001613f"
